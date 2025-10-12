@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./Login.css"; // 👈 keep this line now
-import bgImage from "./doctor_bg.jpg"; // 👈 Add a nice background image (place file in src folder)
+import "./Login.css";
+import bgImage from "./doctor_bg.jpg";
 
 function Login({ onLogin }) {
   const [user, setUser] = useState("");
@@ -32,11 +32,11 @@ function Login({ onLogin }) {
         backgroundPosition: "center",
         fontFamily: "'Poppins', sans-serif",
         overflow: "hidden",
-        position: "relative", // ✅ ensures proper stacking
-        zIndex: 0, // ✅ base layer so it never blocks dashboard
+        position: "relative",
+        zIndex: 0,
       }}
     >
-      {/* Animated glow circle */}
+      {/* Background animations */}
       <div
         style={{
           position: "absolute",
@@ -48,7 +48,7 @@ function Login({ onLogin }) {
           left: "10%",
           filter: "blur(90px)",
           animation: "float 6s ease-in-out infinite alternate",
-          zIndex: 0, // ✅ background only
+          zIndex: 0,
         }}
       />
       <div
@@ -62,7 +62,7 @@ function Login({ onLogin }) {
           right: "10%",
           filter: "blur(100px)",
           animation: "float 8s ease-in-out infinite alternate-reverse",
-          zIndex: 0, // ✅ background only
+          zIndex: 0,
         }}
       />
 
@@ -78,7 +78,7 @@ function Login({ onLogin }) {
           border: "1px solid rgba(255, 255, 255, 0.2)",
           color: "#fff",
           textAlign: "center",
-          zIndex: 2, // ✅ only the card above backgrounds
+          zIndex: 2,
           animation: "fadeIn 1.2s ease",
         }}
       >
@@ -180,7 +180,6 @@ function Login({ onLogin }) {
               fontSize: 16,
               cursor: "pointer",
               transition: "0.3s",
-              marginBottom: 12,
             }}
             onMouseOver={(e) =>
               (e.currentTarget.style.boxShadow = "0 0 18px rgba(0,212,255,0.7)")
@@ -188,34 +187,6 @@ function Login({ onLogin }) {
             onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
           >
             Login
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setUser("manavaidoctor");
-              setPass("kumaran@123");
-              setError("");
-            }}
-            style={{
-              width: "100%",
-              background: "rgba(255,255,255,0.15)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 10,
-              padding: "10px 0",
-              fontWeight: 500,
-              cursor: "pointer",
-              transition: "0.3s",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.25)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.background = "rgba(255,255,255,0.15)")
-            }
-          >
-            Fill Demo Credentials
           </button>
         </form>
       </div>
