@@ -1,0 +1,190 @@
+/* 🌈 NAMMA DOCTOR - Premium Login Page */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Background Gradient + Motion */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #0072ff, #00c6ff, #ff9933);
+  background-size: 400% 400%;
+  animation: gradientFlow 12s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floating glow circles for depth */
+.login-container::before,
+.login-container::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  filter: blur(90px);
+  animation: float 10s ease-in-out infinite alternate;
+}
+
+.login-container::before {
+  top: 15%;
+  left: 10%;
+  background: rgba(255, 153, 51, 0.2);
+}
+
+.login-container::after {
+  bottom: 15%;
+  right: 10%;
+  background: rgba(19, 136, 8, 0.2);
+}
+
+/* Login Card with Glassmorphism */
+.login-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 45px 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 420px;
+  text-align: center;
+  color: #fff;
+  z-index: 10;
+  animation: fadeIn 1s ease;
+}
+
+/* Title */
+.login-card h2 {
+  font-size: 36px;
+  margin-bottom: 6px;
+  background: linear-gradient(90deg, #ff9933, #ffffff, #138808);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+/* Subtitle slogan */
+.subtitle {
+  font-size: 15px;
+  color: #e0f7ff;
+  margin-bottom: 25px;
+  letter-spacing: 0.4px;
+}
+
+/* Labels & Inputs */
+label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+input:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+
+/* Buttons */
+.login-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #007bff, #00d4ff);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.login-btn:hover {
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+}
+
+/* Demo Button */
+.demo-btn {
+  width: 100%;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.demo-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Error message */
+.error {
+  background: rgba(255, 0, 0, 0.15);
+  color: #ffb3b3;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* ✨ Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
