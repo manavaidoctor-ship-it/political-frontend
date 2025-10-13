@@ -517,12 +517,12 @@ export default function App() {
                 <br />
                 Orthopedic Doctor & Political Representative
                 <br />
-                <strong>Address:</strong> Manapparai, Trichy District, Tamil Nadu - 621307
+                <strong>Address:</strong> Manapparai, Trichy District, Tamil Nadu - 621306
                 <br />
-                <strong>Phone:</strong> +91 98765 43210
+                <strong>Phone:</strong> +91 98654 20095
                 <br />
                 <strong>Email:</strong>{" "}
-                <a href="mailto:drvijayakumar@gmail.com">drvijayakumar@gmail.com</a>
+                <a href="mailto:drvijayakumaraiadmk@gmail.com">drvijayakumar@gmail.com</a>
               </p>
 
               <hr style={{ margin: "20px 0", borderTop: "2px solid #eee" }} />
@@ -533,9 +533,9 @@ export default function App() {
                 <br />
                 <strong>Developer:</strong> Tendulkar
                 <br />
-                <strong>Email:</strong> <a href="mailto:support@manavaidoctor.in">support@manavaidoctor.in</a>
+                <strong>Email:</strong> <a href="manavaidoctor@gmail.com">manavaidoctor@gmail.com</a>
                 <br />
-                <strong>Phone:</strong> +91 98765 12345
+                <strong>Phone:</strong> +91 70945 23321
               </p>
             </div>
           )}
