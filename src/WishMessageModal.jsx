@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 
 export default function WishMessageModal({ onClose }) {
-  const API = "http://localhost:4000";
+  const API = "https://political-backend.onrender.com";
+
 
 
   const [message, setMessage] = useState("");
