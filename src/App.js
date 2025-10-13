@@ -1,7 +1,7 @@
 // src/App.js
-import WishMessageModal from "./WishMessageModal";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import WishMessageModal from "./WishMessageModal";
 import { Pie, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,29 +13,15 @@ import {
   BarElement,
 } from "chart.js";
 import "./App.css";
-import Login from "./Login"; // Use your external stylish Login component
+import Login from "./Login";
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
-/*
-  Full App.js (single-file export)
-  - Uses external Login.js (glassmorphic login + doctor_bg.jpg)
-  - All your dashboard logic (events, visitors, important files, voters, charts)
-  - NO changes to your functions / behavior — preserved exactly
-*/
-
 export default function App() {
- const API = "https://political-backend.onrender.com";
+  const API = "https://political-backend.onrender.com";
 
-
-
-  // -----------------------
-  // ALL hooks declared at top (no conditional hooks)
-  // -----------------------
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") === "true");
-
-  // app state
-  const [view, setView] = useState("home"); // home | important | addEvent | visitor | allevents
+  const [view, setView] = useState("home");
   const [voters, setVoters] = useState([]);
   const [search, setSearch] = useState("");
   const [booth, setBooth] = useState("");
@@ -43,27 +29,16 @@ export default function App() {
   const [limit] = useState(100);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-const [showWishModal, setShowWishModal] = useState(false);
+  const [showWishModal, setShowWishModal] = useState(false);
 
-
-  // summary / charts
   const [summary, setSummary] = useState({ gender: [], ageGroups: {} });
-
-  // events
   const [todayEvents, setTodayEvents] = useState([]);
   const [tomorrowEvents, setTomorrowEvents] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-
-  // visitors
   const [visitors, setVisitors] = useState([]);
   const [showVisitorsList, setShowVisitorsList] = useState(false);
-
-  // files
   const [importantFiles, setImportantFiles] = useState([]);
 
-  // -----------------------
-  // Helpers & utils (no hooks)
-  // -----------------------
   const sameDate = (a, b) => {
     if (!a || !b) return false;
     const da = new Date(a);
@@ -76,9 +51,6 @@ const [showWishModal, setShowWishModal] = useState(false);
     setLoggedIn(false);
   };
 
-  // -----------------------
-  // FETCH FUNCTIONS
-  // -----------------------
   const fetchSummary = async () => {
     try {
       const res = await axios.get(`${API}/api/summary`);
@@ -96,7 +68,6 @@ const [showWishModal, setShowWishModal] = useState(false);
       if (booth) params.append("booth", booth);
       params.append("page", pageNum);
       params.append("limit", limit);
-
       const res = await axios.get(`${API}/api/voters?${params.toString()}`);
       setVoters(res.data.data || []);
       setTotal(res.data.total || 0);
@@ -110,20 +81,15 @@ const [showWishModal, setShowWishModal] = useState(false);
 
   const fetchTodayTomorrow = async () => {
     try {
-      // call the backend route that returns today + tomorrow events (or fall back to all)
       const res = await axios.get(`${API}/api/events/today`);
       let events = Array.isArray(res.data) ? res.data : [];
-
       if (!events.length) {
-        // fallback endpoint - your server provides /api/events/all
         const allRes = await axios.get(`${API}/api/events/all`);
         events = Array.isArray(allRes.data) ? allRes.data : [];
       }
-
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
-
       setTodayEvents(events.filter((e) => sameDate(e.event_date, today)));
       setTomorrowEvents(events.filter((e) => sameDate(e.event_date, tomorrow)));
     } catch (err) {
@@ -160,19 +126,14 @@ const [showWishModal, setShowWishModal] = useState(false);
     }
   };
 
-  // -----------------------
-  // LIFECYCLE - load once when logged in
-  // -----------------------
   useEffect(() => {
     if (!loggedIn) return;
     fetchSummary();
     fetchTodayTomorrow();
-    // do not fetch voters until user triggers search
+    // intentionally left fetchVoters out until user searches
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
-  // -----------------------
-  // ACTIONS (add/delete)
-  // -----------------------
   const addEvent = async (formEvent) => {
     try {
       await axios.post(`${API}/api/events`, formEvent);
@@ -258,9 +219,6 @@ const [showWishModal, setShowWishModal] = useState(false);
     }
   };
 
-  // -----------------------
-  // CHART DATA
-  // -----------------------
   const maleCount = summary.gender.find((g) => g.gender === "Male")?.count || 0;
   const femaleCount = summary.gender.find((g) => g.gender === "Female")?.count || 0;
 
@@ -272,27 +230,26 @@ const [showWishModal, setShowWishModal] = useState(false);
   const ageGroups = summary.ageGroups || {};
   const ageData = {
     labels: ["18–25", "26–50", "51–75", "75+"],
-    datasets: [{ label: "Voter Count", data: [
-        ageGroups.age_18_25 || 0,
-        ageGroups.age_26_50 || 0,
-        ageGroups.age_51_75 || 0,
-        ageGroups.age_75_plus || 0,
-      ], backgroundColor: "#28a745" }],
+    datasets: [
+      {
+        label: "Voter Count",
+        data: [
+          ageGroups.age_18_25 || 0,
+          ageGroups.age_26_50 || 0,
+          ageGroups.age_51_75 || 0,
+          ageGroups.age_75_plus || 0,
+        ],
+        backgroundColor: "#28a745",
+      },
+    ],
   };
 
-  // -----------------------
-  // If not logged in: show external Login
-  // -----------------------
   if (!loggedIn) {
     return <Login onLogin={() => setLoggedIn(true)} />;
   }
 
-  // -----------------------
-  // MAIN RENDER - Dashboard
-  // -----------------------
   return (
     <div className="dashboard">
-      {/* Logout Button */}
       <button
         onClick={handleLogout}
         style={{
@@ -304,7 +261,7 @@ const [showWishModal, setShowWishModal] = useState(false);
           border: "none",
           borderRadius: "8px",
           padding: "8px 14px",
-          fontWeight: "600",
+          fontWeight: 600,
           cursor: "pointer",
           zIndex: 1000,
           boxShadow: "0 3px 8px rgba(0,0,0,0.15)",
@@ -313,14 +270,11 @@ const [showWishModal, setShowWishModal] = useState(false);
         Logout
       </button>
 
-      {/* HEADER */}
       <header className="header">
         <img src="/header.jpg" alt="Header Banner" className="header-img" />
       </header>
 
-      {/* LAYOUT */}
       <div className="main-layout">
-        {/* SIDEBAR */}
         <aside className="sidebar">
           <button
             onClick={() => {
@@ -351,13 +305,13 @@ const [showWishModal, setShowWishModal] = useState(false);
           >
             🧾 Visitors Entry
           </button>
-<button onClick={() => setShowWishModal(true)}>📩 Wish Message</button>
 
+          <button onClick={() => setShowWishModal(true)}>📩 Wish Message</button>
 
           <button onClick={() => fetchAllEvents()}>🔍 View All Events</button>
+          <button onClick={() => setView("about")}>ℹ️ About</button>
         </aside>
 
-        {/* MAIN CONTENT */}
         <main className="content">
           {view === "important" && (
             <div className="important-section">
@@ -546,6 +500,46 @@ const [showWishModal, setShowWishModal] = useState(false);
             </div>
           )}
 
+          {view === "about" && (
+            <div className="about-section">
+              <h2>ℹ️ About</h2>
+              <p>
+                This website is owned and maintained by <strong>Dr. P. L. Vijayakumar</strong>, an orthopedic doctor from{" "}
+                <strong>Manapparai, Tamil Nadu</strong>. He serves the community in healthcare and public service and has entered
+                politics under the <strong>ADMK Party</strong>.
+              </p>
+
+              <hr style={{ margin: "20px 0", borderTop: "2px solid #eee" }} />
+
+              <h3>📞 Contact Details</h3>
+              <p>
+                <strong>Dr. P. L. Vijayakumar</strong>
+                <br />
+                Orthopedic Doctor & Political Representative
+                <br />
+                <strong>Address:</strong> Manapparai, Trichy District, Tamil Nadu - 621307
+                <br />
+                <strong>Phone:</strong> +91 98765 43210
+                <br />
+                <strong>Email:</strong>{" "}
+                <a href="mailto:drvijayakumar@gmail.com">drvijayakumar@gmail.com</a>
+              </p>
+
+              <hr style={{ margin: "20px 0", borderTop: "2px solid #eee" }} />
+
+              <h3>🛠 Website Support Team</h3>
+              <p>
+                For technical issues or website downtime, contact the support team:
+                <br />
+                <strong>Developer:</strong> Tendulkar
+                <br />
+                <strong>Email:</strong> <a href="mailto:support@manavaidoctor.in">support@manavaidoctor.in</a>
+                <br />
+                <strong>Phone:</strong> +91 98765 12345
+              </p>
+            </div>
+          )}
+
           {view === "home" && (
             <>
               <div className="stats">
@@ -559,47 +553,39 @@ const [showWishModal, setShowWishModal] = useState(false);
                 </div>
               </div>
 
-           {/* ===== SEARCH AREA (Improved with labels & alignment) ===== */}
-{/* ======= SEARCH AREA (Perfectly Aligned) ======= */}
-<div className="search-area">
-  <div className="search-field">
-    <label>Search Name / EPIC / House No:</label>
-    <input
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      placeholder="Enter voter name, EPIC, or house no..."
-    />
-  </div>
+              <div className="search-area">
+                <div className="search-field">
+                  <label>Search Name / EPIC / House No:</label>
+                  <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Enter voter name, EPIC, or house no..." />
+                </div>
 
-  <div className="search-field">
-    <label>Select Booth:</label>
-    <select value={booth} onChange={(e) => setBooth(e.target.value)}>
-      <option value="">All Booths</option>
-      {[...Array(324)].map((_, i) => (
-        <option key={i + 1} value={i + 1}>
-          Booth {i + 1}
-        </option>
-      ))}
-    </select>
-  </div>
+                <div className="search-field">
+                  <label>Select Booth:</label>
+                  <select value={booth} onChange={(e) => setBooth(e.target.value)}>
+                    <option value="">All Booths</option>
+                    {[...Array(324)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        Booth {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-  <div className="search-buttons">
-    <button onClick={() => fetchVoters(1)}>Search</button>
-    <button
-      onClick={() => {
-        setSearch("");
-        setBooth("");
-        setVoters([]);
-        setPage(1);
-      }}
-      className="clear-btn"
-    >
-      Clear
-    </button>
-  </div>
-</div>
-
-
+                <div className="search-buttons">
+                  <button onClick={() => fetchVoters(1)}>Search</button>
+                  <button
+                    onClick={() => {
+                      setSearch("");
+                      setBooth("");
+                      setVoters([]);
+                      setPage(1);
+                    }}
+                    className="clear-btn"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
 
               {loading ? (
                 <p>Loading voters...</p>
@@ -658,7 +644,9 @@ const [showWishModal, setShowWishModal] = useState(false);
 
                   {voters.length > 0 && (
                     <div className="results-footer">
-                      <p className="results-info">🔍 {total} record{total !== 1 ? "s" : ""} found</p>
+                      <p className="results-info">
+                        🔍 {total} record{total !== 1 ? "s" : ""} found
+                      </p>
 
                       {Math.ceil(total / limit) > 1 && (
                         <div className="pagination">
@@ -677,7 +665,6 @@ const [showWishModal, setShowWishModal] = useState(false);
           )}
         </main>
 
-        {/* RIGHT PANEL */}
         <aside className="right-panel">
           <div className="display-board">
             <h4>📅 Today & Tomorrow’s Event Plan</h4>
@@ -728,6 +715,7 @@ const [showWishModal, setShowWishModal] = useState(false);
 
               <div style={{ textAlign: "center" }}>
                 <button onClick={fetchAllEvents}>🔍 View All Events</button>
+                <button onClick={() => setView("about")}>ℹ️ About</button>
               </div>
             </div>
           </div>
@@ -743,8 +731,12 @@ const [showWishModal, setShowWishModal] = useState(false);
           </div>
         </aside>
       </div>
-{/* ✅ Wish Message Modal (Popup) */}
-{showWishModal && <WishMessageModal onClose={() => setShowWishModal(false)} />}
+
+      {showWishModal && <WishMessageModal onClose={() => setShowWishModal(false)} />}
+
+      <footer className="footer">
+        <p>© 2025 | Created by <strong>Tendulkar</strong> | All Rights Reserved</p>
+      </footer>
     </div>
   );
 }

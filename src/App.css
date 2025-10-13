@@ -450,3 +450,207 @@ tr:hover td {
   margin: 0 auto;
   display: block;
 }
+/* ============================= */
+/* RESPONSIVE DESIGN FIXES */
+/* ============================= */
+
+/* --- Tablet (max-width: 1024px) --- */
+@media (max-width: 1024px) {
+  .main-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    width: 90%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    position: static;
+  }
+
+  .sidebar button {
+    flex: 1 1 45%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .content {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .right-panel {
+    width: 95%;
+  }
+
+  .chart-box canvas {
+    max-width: 200px !important;
+    max-height: 200px !important;
+  }
+}
+
+/* --- Mobile (max-width: 768px) --- */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+
+  .header-img {
+    border-radius: 0;
+  }
+
+  .main-layout {
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 10px;
+    background: #004fc2;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .sidebar button {
+    flex: 1 1 100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 15px;
+    box-shadow: none;
+  }
+
+  .search-area {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 8px 5px;
+  }
+
+  .chart-box canvas {
+    max-width: 180px !important;
+    max-height: 180px !important;
+  }
+
+  footer {
+    font-size: 13px;
+  }
+}
+
+/* --- Extra small screens (max-width: 480px) --- */
+@media (max-width: 480px) {
+  .sidebar button {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .stat-box {
+    width: 150px;
+    padding: 8px;
+  }
+
+  .chart-box h4 {
+    font-size: 14px;
+  }
+
+  .display-board h4 {
+    font-size: 15px;
+  }
+}
+
+/* ============================= */
+/* 🌐 ABOUT SECTION (New) */
+/* ============================= */
+.about-section {
+  background: linear-gradient(145deg, #ffffff, #f7faff);
+  padding: 30px 25px;
+  border-radius: 18px;
+  box-shadow: 0 6px 22px rgba(0, 98, 255, 0.12);
+  animation: fadeIn 0.5s ease-in-out;
+  line-height: 1.8;
+  font-size: 15.5px;
+  color: #1e2a38;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 123, 255, 0.1);
+}
+
+.about-section h2 {
+  color: #004fc2;
+  font-weight: 700;
+  font-size: 22px;
+  border-bottom: 2px solid #d0e1ff;
+  padding-bottom: 8px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.about-section p {
+  margin-bottom: 15px;
+  text-align: justify;
+}
+
+.about-section strong {
+  color: #004fc2;
+}
+
+/* Hover animation for About section */
+.about-section:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 98, 255, 0.18);
+  transition: 0.3s ease;
+}
+
+/* ============================= */
+/* 🌈 FOOTER (New) */
+/* ============================= */
+.footer {
+  background: linear-gradient(90deg, #004fc2, #007bff);
+  color: #fff;
+  text-align: center;
+  padding: 14px;
+  font-size: 14px;
+  border-top: 3px solid #003b9c;
+  margin-top: 30px;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 -3px 15px rgba(0, 98, 255, 0.3);
+  font-weight: 500;
+}
+
+.footer strong {
+  color: #ffea00;
+  font-weight: 700;
+}
+
+/* Subtle glow for footer text */
+.footer p {
+  margin: 0;
+  letter-spacing: 0.3px;
+  animation: footerGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes footerGlow {
+  from {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+  }
+  to {
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+  }
+}
