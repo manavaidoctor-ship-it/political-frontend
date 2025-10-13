@@ -1,4 +1,5 @@
 // src/App.js
+import WishMessageModal from "./WishMessageModal";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Pie, Bar } from "react-chartjs-2";
@@ -24,7 +25,9 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 */
 
 export default function App() {
-  const API = "https://political-backend.onrender.com";
+ const API = "https://political-backend.onrender.com";
+
+
 
   // -----------------------
   // ALL hooks declared at top (no conditional hooks)
@@ -40,6 +43,8 @@ export default function App() {
   const [limit] = useState(100);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+const [showWishModal, setShowWishModal] = useState(false);
+
 
   // summary / charts
   const [summary, setSummary] = useState({ gender: [], ageGroups: {} });
@@ -346,6 +351,8 @@ export default function App() {
           >
             🧾 Visitors Entry
           </button>
+<button onClick={() => setShowWishModal(true)}>📩 Wish Message</button>
+
 
           <button onClick={() => fetchAllEvents()}>🔍 View All Events</button>
         </aside>
@@ -736,6 +743,8 @@ export default function App() {
           </div>
         </aside>
       </div>
+{/* ✅ Wish Message Modal (Popup) */}
+{showWishModal && <WishMessageModal onClose={() => setShowWishModal(false)} />}
     </div>
   );
 }
