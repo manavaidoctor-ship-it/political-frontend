@@ -3,7 +3,11 @@ import axios from "axios";
 import "./LeadershipList.css";
 
 const LeadershipList = () => {
-  const API = "http://localhost:4000";
+ const API =
+  window.location.hostname === "localhost"
+    ? "http://localhost:4000"
+    : "https://political-backend.onrender.com";
+
 
   const [leaders, setLeaders] = useState([]);
   const [unionFilter, setUnionFilter] = useState("");

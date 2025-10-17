@@ -22,11 +22,10 @@ import "./App.css";
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 export default function App() {
+ const API =
   window.location.hostname === "localhost"
-  ? "http://localhost:4000"
-  : "https://political-backend.onrender.com"
-
-
+    ? "http://localhost:4000"
+    : "https://political-backend.onrender.com";
 
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") === "true");
   const [view, setView] = useState("home");
