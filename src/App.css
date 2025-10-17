@@ -654,3 +654,287 @@ tr:hover td {
     text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
   }
 }
+/* ============================= */
+/* 👨‍👩‍👧 FAMILY MAPPING & LIST */
+/* ============================= */
+
+.family-container {
+  background: linear-gradient(145deg, #ffffff, #f6f9ff);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 98, 255, 0.1);
+  animation: fadeIn 0.5s ease;
+  border: 1px solid rgba(0, 123, 255, 0.15);
+}
+
+.family-container h2 {
+  color: #004fc2;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #d0e1ff;
+  padding-bottom: 10px;
+}
+
+/* --- Form Section --- */
+.family-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  background: #f8fbff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 98, 255, 0.1);
+  margin-bottom: 25px;
+}
+
+.family-form label {
+  font-weight: 600;
+  color: #004aad;
+  font-size: 15px;
+}
+
+.family-form input,
+.family-form select {
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid #cdd9ff;
+  background: #ffffff;
+  color: #1e2a38;
+  font-size: 15px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.family-form input:focus,
+.family-form select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+}
+
+.family-form button {
+  background: linear-gradient(90deg, #007bff, #00a8ff);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 98, 255, 0.25);
+  transition: 0.3s ease;
+}
+
+.family-form button:hover {
+  background: linear-gradient(90deg, #005ed9, #008cff);
+  transform: translateY(-2px);
+}
+
+/* --- Table Section --- */
+.family-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.family-table th {
+  background: linear-gradient(90deg, #0062ff, #00a8ff);
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 12px;
+}
+
+.family-table td {
+  text-align: center;
+  padding: 10px 8px;
+  border-bottom: 1px solid #eef2fa;
+}
+
+.family-table tr:nth-child(even) {
+  background: #f9fcff;
+}
+
+.family-table tr:hover td {
+  background: #f0f7ff;
+}
+
+/* --- Members Section --- */
+.members-section {
+  margin-top: 30px;
+  background: linear-gradient(145deg, #ffffff, #f9fbff);
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 98, 255, 0.12);
+  animation: fadeIn 0.4s ease;
+}
+
+.members-section h3 {
+  color: #004fc2;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #d0e1ff;
+  padding-bottom: 8px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .family-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .family-form input,
+  .family-form select {
+    width: 100%;
+  }
+
+  .family-form button {
+    width: 100%;
+  }
+}
+/* ===========================================
+   📂 IMPORTANT FILES – Modern Look
+   =========================================== */
+.important-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.file-upload-label {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.file-upload-label:hover {
+  background-color: #0056b3;
+}
+
+#file-upload {
+  display: none;
+}
+
+.selected-file {
+  color: #007bff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.upload-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.upload-btn:hover {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-card {
+  background: #f9f9ff;
+  border: 1px solid #e1e1f0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.file-card:hover {
+  background: #eef5ff;
+  transform: translateY(-2px);
+}
+
+.file-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.file-link:hover {
+  text-decoration: underline;
+}
+
+.file-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #b52d3b;
+}
+
+.no-files {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

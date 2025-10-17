@@ -1,7 +1,12 @@
-// src/App.js
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
+import ElectionDashboard from "./ElectionDashboard";
+import LeadershipList from "./LeadershipList";
+import FamilyList from "./FamilyList";
+import FamilyMapping from "./FamilyMapping";
 import WishMessageModal from "./WishMessageModal";
+import Login from "./Login";
 import { Pie, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,15 +18,23 @@ import {
   BarElement,
 } from "chart.js";
 import "./App.css";
-import Login from "./Login";
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 export default function App() {
-  const API = "https://political-backend.onrender.com";
+  window.location.hostname === "localhost"
+  ? "http://localhost:4000"
+  : "https://political-backend.onrender.com"
+
+
 
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("loggedIn") === "true");
   const [view, setView] = useState("home");
+  const [voterName, setVoterName] = useState("");
+  const [relativeName, setRelativeName] = useState("");
+
+  const [panchayat, setPanchayat] = useState("");
+  const [village, setVillage] = useState("");
   const [voters, setVoters] = useState([]);
   const [search, setSearch] = useState("");
   const [booth, setBooth] = useState("");
@@ -30,7 +43,7 @@ export default function App() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showWishModal, setShowWishModal] = useState(false);
-
+  const [selectedFile, setSelectedFile] = useState(null);
   const [summary, setSummary] = useState({ gender: [], ageGroups: {} });
   const [todayEvents, setTodayEvents] = useState([]);
   const [tomorrowEvents, setTomorrowEvents] = useState([]);
@@ -38,6 +51,22 @@ export default function App() {
   const [visitors, setVisitors] = useState([]);
   const [showVisitorsList, setShowVisitorsList] = useState(false);
   const [importantFiles, setImportantFiles] = useState([]);
+
+  const [panchayats, setPanchayats] = useState([]);
+
+  const fetchPanchayats = async () => {
+    try {
+      const res = await axios.get(`${API}/api/panchayats`);
+      setPanchayats(res.data || []);
+    } catch (err) {
+      console.error("fetchPanchayats:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPanchayats();
+  }, []);
+
 
   const sameDate = (a, b) => {
     if (!a || !b) return false;
@@ -51,24 +80,34 @@ export default function App() {
     setLoggedIn(false);
   };
 
-  const fetchSummary = async () => {
+  const fetchSummary = async (booth = "", panchayat = "", village = "") => {
     try {
-      const res = await axios.get(`${API}/api/summary`);
+      const params = new URLSearchParams();
+      if (booth) params.append("booth_no", booth);
+      if (panchayat) params.append("panchayat_id", panchayat);
+      if (village) params.append("village_name", village);
+
+      const res = await axios.get(`${API}/api/summary?${params.toString()}`);
       setSummary(res.data || { gender: [], ageGroups: {} });
     } catch (err) {
       console.error("fetchSummary:", err);
     }
   };
 
+
   const fetchVoters = async (pageNum = 1) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (search) params.append("search", search);
-      if (booth) params.append("booth", booth);
+      if (panchayat) params.append("panchayat_name", panchayat);
+      if (booth) params.append("booth_no", booth);
+      if (village) params.append("village_name", village);
+      if (voterName) params.append("name", voterName);
+      if (relativeName) params.append("relative_name", relativeName);
       params.append("page", pageNum);
       params.append("limit", limit);
-      const res = await axios.get(`${API}/api/voters?${params.toString()}`);
+
+      const res = await axios.get(`${API}/api/voters/all?${params.toString()}`);
       setVoters(res.data.data || []);
       setTotal(res.data.total || 0);
       setPage(pageNum);
@@ -78,6 +117,7 @@ export default function App() {
     }
     setLoading(false);
   };
+
 
   const fetchTodayTomorrow = async () => {
     try {
@@ -276,65 +316,78 @@ export default function App() {
 
       <div className="main-layout">
         <aside className="sidebar">
-          <button
-            onClick={() => {
-              setView("home");
-              fetchSummary();
-              fetchTodayTomorrow();
-            }}
-          >
-            🏠 Home
-          </button>
-
-          <button
-            onClick={() => {
-              setView("important");
-              fetchImportantFiles();
-            }}
-          >
-            📂 Important File
-          </button>
-
+          <button onClick={() => { setView("home"); }}>🏠 Home</button>
+          <button onClick={() => { setView("important"); }}>📂 Important File</button>
           <button onClick={() => setView("addEvent")}>🎉 Add Event</button>
-
-          <button
-            onClick={() => {
-              setView("visitor");
-              setShowVisitorsList(false);
-            }}
-          >
-            🧾 Visitors Entry
-          </button>
-
+          <button onClick={() => { setView("visitor"); }}>🧾 Visitors Entry</button>
           <button onClick={() => setShowWishModal(true)}>📩 Wish Message</button>
-
-          <button onClick={() => fetchAllEvents()}>🔍 View All Events</button>
+          <button onClick={() => setView("familymap")}>👨‍👩‍👧 Family Mapping</button>
+          <button onClick={() => setView("familylist")}>📋 View Family List</button>
+          <button onClick={() => setView("leadership")}>👔 Party Leadership</button>
           <button onClick={() => setView("about")}>ℹ️ About</button>
+          <li><Link to="/election">🗳 Election Analytics</Link></li>
         </aside>
 
         <main className="content">
           {view === "important" && (
             <div className="important-section">
-              <h3>📂 Important Files</h3>
+              <h3>📁 Important Files</h3>
+
               <form
-                onSubmit={(e) => {
+                className="upload-form"
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  const file = e.target.file.files[0];
-                  if (file) uploadImportantFile(file);
+                  if (!selectedFile) return alert("Please select a file before uploading.");
+                  const fd = new FormData();
+                  fd.append("file", selectedFile);
+
+                  try {
+                    const res = await axios.post(`${API}/api/important/upload`, fd, {
+                      headers: { "Content-Type": "multipart/form-data" },
+                    });
+                    alert("✅ File uploaded successfully!");
+                    fetchImportantFiles();
+                    setSelectedFile(null);
+                    e.target.reset();
+                  } catch (err) {
+                    console.error("Upload error:", err);
+                    alert("❌ Upload failed. Please check file format and try again.");
+                  }
                 }}
               >
-                <input type="file" name="file" accept=".pdf,.xls,.xlsx" />
-                <button type="submit">Upload File</button>
+                <div className="file-upload-container">
+                  <label htmlFor="file-upload" className="file-upload-label">
+                    <span className="upload-icon">📎</span> Choose File
+                  </label>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    name="file"
+                    accept=".pdf,.xls,.xlsx,.jpg,.jpeg,.png"
+                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                  />
+                  {selectedFile && (
+                    <p className="selected-file">
+                      <span>📄 {selectedFile.name}</span>
+                    </p>
+                  )}
+                  <button type="submit" className="upload-btn">
+                    ⬆️ Upload
+                  </button>
+                </div>
               </form>
 
               <ul className="file-list">
                 {importantFiles.length ? (
                   importantFiles.map((f, i) => (
-                    <li key={i} className="file-item">
-                      <div className="file-info">
-                        <a href={f.url} target="_blank" rel="noreferrer">
-                          📄 {f.name}
+                    <li key={i} className="file-card">
+                      <div className="file-left">
+                        <a href={f.url} target="_blank" rel="noreferrer" className="file-link">
+                          📘 {f.name}
                         </a>
+                        <small className="file-meta">
+                          {f.size} | Uploaded: {f.date}
+                        </small>
                       </div>
                       <button className="delete-btn" onClick={() => deleteImportantFile(f.name)}>
                         🗑️
@@ -342,11 +395,12 @@ export default function App() {
                     </li>
                   ))
                 ) : (
-                  <p>No files yet.</p>
+                  <p className="no-files">No files uploaded yet.</p>
                 )}
               </ul>
             </div>
           )}
+
 
           {view === "addEvent" && (
             <div className="event-form-container">
@@ -459,6 +513,9 @@ export default function App() {
               )}
             </div>
           )}
+          {/* 👨‍👩‍👧 Family Mapping Section */}
+          {view === "familymap" && <FamilyMapping API={API} />}
+          {view === "familylist" && <FamilyList API={API} />}
 
           {view === "allevents" && (
             <div className="event-form-container">
@@ -499,6 +556,7 @@ export default function App() {
               )}
             </div>
           )}
+          {view === "leadership" && <LeadershipList />}
 
           {view === "about" && (
             <div className="about-section">
@@ -555,13 +613,27 @@ export default function App() {
 
               <div className="search-area">
                 <div className="search-field">
-                  <label>Search Name / EPIC / House No:</label>
-                  <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Enter voter name, EPIC, or house no..." />
+                  <label>Select Panchayat:</label>
+                  <select value={panchayat} onChange={(e) => setPanchayat(e.target.value)}>
+                    <option value="">All Panchayats</option>
+                    {panchayats.map((p, i) => (
+                      <option key={i} value={p.panchayat_name}>
+                        {p.panchayat_name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="search-field">
                   <label>Select Booth:</label>
-                  <select value={booth} onChange={(e) => setBooth(e.target.value)}>
+                  <select
+                    value={booth}
+                    onChange={(e) => {
+                      setBooth(e.target.value);
+                      fetchSummary(e.target.value); // 👈 update summary dynamically
+                    }}
+                  >
+
                     <option value="">All Booths</option>
                     {[...Array(324)].map((_, i) => (
                       <option key={i + 1} value={i + 1}>
@@ -571,21 +643,50 @@ export default function App() {
                   </select>
                 </div>
 
+                <div className="search-field">
+                  <label>Village:</label>
+                  <input
+                    value={village}
+                    onChange={(e) => setVillage(e.target.value)}
+                    placeholder="Enter village name"
+                  />
+                </div>
+
+                <div className="search-field">
+                  <label>Voter Name:</label>
+                  <input
+                    value={voterName}
+                    onChange={(e) => setVoterName(e.target.value)}
+                    placeholder="Enter voter name"
+                  />
+                </div>
+
+                <div className="search-field">
+                  <label>Relative Name:</label>
+                  <input
+                    value={relativeName}
+                    onChange={(e) => setRelativeName(e.target.value)}
+                    placeholder="Enter relative name"
+                  />
+                </div>
+
                 <div className="search-buttons">
-                  <button onClick={() => fetchVoters(1)}>Search</button>
+                  <button onClick={() => fetchVoters(1)}>🔍 Search</button>
                   <button
                     onClick={() => {
                       setSearch("");
                       setBooth("");
+                      setPanchayat("");
+                      setVillage("");
                       setVoters([]);
                       setPage(1);
                     }}
                     className="clear-btn"
                   >
-                    Clear
+                    ❌ Clear
                   </button>
                 </div>
-              </div>
+              </div> {/* ✅ closed .search-area properly */}
 
               {loading ? (
                 <p>Loading voters...</p>
@@ -596,12 +697,12 @@ export default function App() {
                       <tr>
                         <th>EPIC No</th>
                         <th>Name</th>
-                        <th>Relative</th>
-                        <th>Relation</th>
-                        <th>House No</th>
+                        <th>Relative Name</th>
                         <th>Age</th>
                         <th>Gender</th>
+                        <th>Panchayat</th>
                         <th>Booth</th>
+                        <th>Village</th>
                         <th>Mobile</th>
                         <th>Edit</th>
                       </tr>
@@ -613,17 +714,20 @@ export default function App() {
                             <td>{v.epic_no}</td>
                             <td>{v.name}</td>
                             <td>{v.relative_name}</td>
-                            <td>{v.relation}</td>
-                            <td>{v.house_no}</td>
                             <td>{v.age}</td>
                             <td>{v.gender}</td>
+                            <td>{v.panchayat_name}</td>
                             <td>{v.booth_no}</td>
+                            <td>{v.village_name}</td>
                             <td>{v.mobile_number || "—"}</td>
                             <td>
                               <button
                                 className="edit-btn"
                                 onClick={async () => {
-                                  const newNumber = prompt(`New mobile for ${v.name}:`, v.mobile_number || "");
+                                  const newNumber = prompt(
+                                    `New mobile for ${v.name}:`,
+                                    v.mobile_number || ""
+                                  );
                                   if (newNumber) updateMobile(v.id, newNumber);
                                 }}
                               >
@@ -651,7 +755,11 @@ export default function App() {
                       {Math.ceil(total / limit) > 1 && (
                         <div className="pagination">
                           {Array.from({ length: Math.ceil(total / limit) }, (_, i) => (
-                            <button key={i + 1} className={page === i + 1 ? "active" : ""} onClick={() => fetchVoters(i + 1)}>
+                            <button
+                              key={i + 1}
+                              className={page === i + 1 ? "active" : ""}
+                              onClick={() => fetchVoters(i + 1)}
+                            >
                               {i + 1}
                             </button>
                           ))}
@@ -662,13 +770,15 @@ export default function App() {
                 </>
               )}
             </>
-          )}
+          )} {/* ✅ Properly closed fragment here */}
+
         </main>
 
         <aside className="right-panel">
           <div className="display-board">
             <h4>📅 Today & Tomorrow’s Event Plan</h4>
             <div className="event-section">
+              {/* 🔹 Today's Events */}
               <div className="event-box">
                 <h5>Today's Events</h5>
                 {todayEvents.length ? (
@@ -691,6 +801,7 @@ export default function App() {
                 )}
               </div>
 
+              {/* 🔹 Tomorrow's Events */}
               <div className="event-box">
                 <h5>Tomorrow's Events</h5>
                 {tomorrowEvents.length ? (
@@ -713,6 +824,7 @@ export default function App() {
                 )}
               </div>
 
+              {/* 🔹 Buttons Section */}
               <div style={{ textAlign: "center" }}>
                 <button onClick={fetchAllEvents}>🔍 View All Events</button>
                 <button onClick={() => setView("about")}>ℹ️ About</button>
@@ -720,6 +832,7 @@ export default function App() {
             </div>
           </div>
 
+          {/* 🔹 Charts Section */}
           <div className="chart-box">
             <h4>Gender Ratio</h4>
             <Pie data={genderData} />
@@ -729,14 +842,20 @@ export default function App() {
             <h4>Age Groups</h4>
             <Bar data={ageData} />
           </div>
-        </aside>
-      </div>
+        </aside> {/* ✅ closes right-panel */}
 
+      </div> {/* ✅ closes main-layout */}
+
+      {/* 🔹 Wish Message Modal */}
       {showWishModal && <WishMessageModal onClose={() => setShowWishModal(false)} />}
 
-      <footer className="footer">
-        <p>© 2025 | Created by <strong>Tendulkar</strong> | All Rights Reserved</p>
-      </footer>
-    </div>
-  );
+       {/* 🔹 Footer */}
+  <footer className="footer">
+    <p>
+      © 2025 | Created by <strong>Tendulkar</strong> | All Rights Reserved
+    </p>
+  </footer>
+</div>
+);
 }
+
